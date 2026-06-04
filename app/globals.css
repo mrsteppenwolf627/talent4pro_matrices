@@ -1,0 +1,251 @@
+:root {
+  --color-primary: #2D5016;
+  --color-primary-hover: #3a6b1e;
+  --color-secondary: #D4C7B8;
+  --color-secondary-hover: #c4b5a4;
+  --color-bg: #f9f7f4;
+  --color-surface: #ffffff;
+  --color-text: #1a1a1a;
+  --color-text-muted: #6b7280;
+  --color-error: #dc2626;
+  --color-border: #e5e0d8;
+  --radius: 8px;
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.6;
+}
+
+/* ─── Buttons ─────────────────────────────────────────── */
+
+.btn-primary {
+  display: inline-block;
+  background-color: var(--color-primary);
+  color: #fff;
+  padding: 0.6rem 1.4rem;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.15s;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: var(--color-primary-hover);
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  display: inline-block;
+  background-color: var(--color-secondary);
+  color: var(--color-text);
+  padding: 0.6rem 1.4rem;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.15s;
+}
+
+.btn-secondary:hover {
+  background-color: var(--color-secondary-hover);
+}
+
+/* ─── Home page ───────────────────────────────────────── */
+
+.home-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  text-align: center;
+  padding: 2rem;
+}
+
+.home-page h1 {
+  font-size: 2.5rem;
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+.home-page p {
+  font-size: 1.1rem;
+  color: var(--color-text-muted);
+  max-width: 400px;
+}
+
+/* ─── Auth pages ──────────────────────────────────────── */
+
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.auth-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 2.5rem;
+  width: 100%;
+  max-width: 400px;
+}
+
+.auth-card h1 {
+  font-size: 1.75rem;
+  color: var(--color-primary);
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 1.25rem;
+}
+
+.form-group label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.form-group input {
+  padding: 0.65rem 0.9rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  font-size: 0.95rem;
+  color: var(--color-text);
+  background: var(--color-bg);
+  transition: border-color 0.15s;
+  outline: none;
+}
+
+.form-group input:focus {
+  border-color: var(--color-primary);
+}
+
+.form-group input:disabled {
+  opacity: 0.6;
+}
+
+.auth-card .btn-primary {
+  width: 100%;
+  text-align: center;
+  padding: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.error-msg {
+  color: var(--color-error);
+  font-size: 0.875rem;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: var(--radius);
+  padding: 0.6rem 0.9rem;
+  margin-bottom: 0.75rem;
+}
+
+.auth-link {
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+}
+
+.auth-link a {
+  color: var(--color-primary);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.auth-link a:hover {
+  text-decoration: underline;
+}
+
+/* ─── Dashboard ───────────────────────────────────────── */
+
+.dashboard {
+  min-height: 100vh;
+  background: var(--color-bg);
+}
+
+.dashboard-header {
+  background: var(--color-primary);
+  color: #fff;
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.dashboard-header h1 {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.user-info span {
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+.dashboard-content {
+  padding: 2.5rem 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.dashboard-content h2 {
+  font-size: 1.5rem;
+  color: var(--color-primary);
+}
+
+.dashboard-content p {
+  color: var(--color-text-muted);
+}
+
+/* ─── Loading ─────────────────────────────────────────── */
+
+.loading {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-muted);
+  font-size: 1rem;
+}

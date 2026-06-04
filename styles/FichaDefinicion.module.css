@@ -1,0 +1,320 @@
+/* ─── Variables ──────────────────────────────────────────────────────────────── */
+.page {
+  --green:        #2D5016;
+  --green-hover:  #3a6b1e;
+  --green-pale:   #e8f0e0;
+  --beige:        #D4C7B8;
+  --beige-dark:   #c4b5a4;
+  --beige-pale:   #f5f1ec;
+  --white:        #ffffff;
+  --border:       #d1c9bf;
+  --text:         #1a1a1a;
+  --text-muted:   #6b7280;
+  --error:        #dc2626;
+  --success:      #166534;
+  --warning:      #92400e;
+  --radius:       8px;
+  --shadow:       0 2px 8px rgba(0,0,0,0.08);
+}
+
+/* ─── Page wrapper ───────────────────────────────────────────────────────────── */
+.page {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* ─── Sticky toolbar ─────────────────────────────────────────────────────────── */
+.toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  padding: 0.75rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.toolbarLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.toolbarTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--green);
+}
+
+.toolbarMeta {
+  font-size: 0.775rem;
+  color: var(--text-muted);
+}
+
+.toolbarRight {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.saveStatus {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.saveStatusSaved   { color: var(--success); }
+.saveStatusDirty   { color: var(--warning); }
+.saveStatusSaving  { color: var(--text-muted); }
+
+.btnSave {
+  background-color: var(--green);
+  color: var(--white);
+  border: none;
+  border-radius: var(--radius);
+  padding: 0.55rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s;
+  white-space: nowrap;
+}
+.btnSave:hover:not(:disabled) { background-color: var(--green-hover); }
+.btnSave:disabled { opacity: 0.55; cursor: not-allowed; }
+
+/* ─── Progress bar ───────────────────────────────────────────────────────────── */
+.progressBar {
+  width: 100%;
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: var(--green);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.progressLabel {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-align: right;
+  margin-top: 0.2rem;
+}
+
+/* ─── Error banner ───────────────────────────────────────────────────────────── */
+.errorBanner {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: var(--radius);
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  color: var(--error);
+}
+
+/* ─── Loading ────────────────────────────────────────────────────────────────── */
+.loading {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 3rem;
+  justify-content: center;
+  color: var(--text-muted);
+}
+
+.spinner {
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 2px solid var(--border);
+  border-top-color: var(--green);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ─── Section card ───────────────────────────────────────────────────────────── */
+.section {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+/* Section header (toggle button) */
+.sectionHeader {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  background: var(--beige-pale);
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 0.15s;
+  gap: 0.75rem;
+}
+.sectionHeader:hover { background: var(--beige); }
+
+.sectionHeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.sectionTitle {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--green);
+}
+
+.sectionBadge {
+  font-size: 0.7rem;
+  background: var(--beige);
+  color: var(--text-muted);
+  border-radius: 99px;
+  padding: 0.15rem 0.55rem;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.sectionBadgeFilled {
+  background: var(--green-pale);
+  color: var(--green);
+  font-weight: 600;
+}
+
+.chevron {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+  color: var(--text-muted);
+  transition: transform 0.2s;
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+}
+
+/* Section body */
+.sectionBody {
+  padding: 1.25rem;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* ─── Field ──────────────────────────────────────────────────────────────────── */
+.field {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 0.75rem 1rem;
+  align-items: flex-start;
+}
+
+.fieldLabel {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text);
+  padding-top: 0.45rem;
+  line-height: 1.4;
+}
+
+.fieldRequired {
+  color: var(--error);
+  margin-left: 2px;
+}
+
+.fieldInput {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  font-family: inherit;
+  color: var(--text);
+  background: var(--beige-pale);
+  resize: vertical;
+  min-height: 5.5rem;
+  line-height: 1.5;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.fieldInput:hover {
+  border-color: var(--beige-dark);
+  background: var(--white);
+}
+
+.fieldInput:focus {
+  outline: none;
+  border-color: var(--green);
+  background: var(--white);
+  box-shadow: 0 0 0 2px rgba(45, 80, 22, 0.12);
+}
+
+.fieldInput:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  resize: none;
+}
+
+.fieldInputFilled {
+  background: var(--white);
+  border-color: var(--beige-dark);
+}
+
+/* ─── Responsive ─────────────────────────────────────────────────────────────── */
+@media (max-width: 700px) {
+  .field {
+    grid-template-columns: 1fr;
+    gap: 0.3rem;
+  }
+
+  .fieldLabel {
+    padding-top: 0;
+    font-size: 0.825rem;
+  }
+
+  .fieldInput {
+    min-height: 4.5rem;
+  }
+
+  .toolbarTitle {
+    font-size: 1rem;
+  }
+
+  .sectionTitle {
+    font-size: 0.875rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .page {
+    padding: 1rem 0.75rem 4rem;
+  }
+
+  .toolbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .toolbarRight {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
