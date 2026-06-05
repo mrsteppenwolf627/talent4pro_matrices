@@ -10,38 +10,31 @@ import styles from '@/styles/MatricesList.module.css'
 
 export default function MatricesPage() {
   const { user, loading: authLoading } = useAuth()
-  const { matrices, loading: listLoading, error, refresh } = useMatricesList()
+  const { matrices, loading: listLoading, error, refresh, deleteMatrix } = useMatricesList()
   const router = useRouter()
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   useEffect(() => {
-    if (!authLoading && !user) {
-      router.push('/auth/login')
-    }
+    if (!authLoading && !user) router.push('/auth/login')
   }, [user, authLoading, router])
 
-  if (authLoading) {
-    return <div className={styles.loading}>Cargando...</div>
-  }
-
-  if (!user) {
-    return null
-  }
+  if (authLoading) return <div className="loading">Cargando</div>
+  if (!user) return null
 
   return (
     <div className={styles.container}>
       <header className={styles.header}>
         <h1 className={styles.title}>Mis Matrices</h1>
-        <div>
-          <button 
-            onClick={() => refresh()} 
+        <div className={styles.headerControls}>
+          <button
+            onClick={() => refresh()}
             className={styles.refreshButton}
             disabled={listLoading}
           >
-            {listLoading ? 'Cargando...' : 'Refrescar'}
+            {listLoading ? '···' : 'Refrescar'}
           </button>
-          <button 
-            onClick={() => setIsModalOpen(true)} 
+          <button
+            onClick={() => setIsModalOpen(true)}
             className={styles.createButton}
           >
             + Nueva Matriz
@@ -50,17 +43,18 @@ export default function MatricesPage() {
       </header>
 
       <main>
-        <MatricesList 
+        <MatricesList
           matrices={matrices}
           loading={listLoading}
           error={error}
           onRefresh={refresh}
+          onDelete={deleteMatrix}
         />
       </main>
 
-      <CreateMatrixModal 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
+      <CreateMatrixModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
       />
     </div>
   )

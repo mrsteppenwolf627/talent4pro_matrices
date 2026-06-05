@@ -6,6 +6,7 @@ interface MatricesListState {
   matrices: MatrixMetadata[]
   loading: boolean
   creating: boolean
+  deleting: boolean
   error: string | null
 }
 
@@ -14,6 +15,7 @@ export function useMatricesList() {
     matrices: [],
     loading: true,
     creating: false,
+    deleting: false,
     error: null,
   })
 
@@ -87,12 +89,44 @@ export function useMatricesList() {
     }
   }
 
+  const deleteMatrix = async (matrixId: string) => {
+    setState(prev => ({ ...prev, deleting: true, error: null }))
+
+    try {
+      const token = await getToken()
+      if (!token) throw new Error('No authenticated session')
+
+      const res = await fetch(`/api/matrices/${matrixId}/delete`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+      })
+
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}))
+        throw new Error(body.error ?? `Error ${res.status}`)
+      }
+
+      setState(prev => ({
+        ...prev,
+        deleting: false,
+        matrices: prev.matrices.filter(m => m.id !== matrixId),
+      }))
+      return { success: true }
+    } catch (err) {
+      const error = (err as Error).message
+      setState(prev => ({ ...prev, deleting: false, error }))
+      return { success: false, error }
+    }
+  }
+
   return {
     matrices: state.matrices,
     loading: state.loading,
     creating: state.creating,
+    deleting: state.deleting,
     error: state.error,
     refresh: fetchMatrices,
     createMatrix,
+    deleteMatrix,
   }
 }

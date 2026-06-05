@@ -80,3 +80,45 @@
 - (+) Velocidad de desarrollo alta
 - (+) Consistencia visual sin CSS custom
 - (-) Clases largas en JSX
+
+---
+
+## ADR-019: Rediseño Premium Editorial
+
+**Fecha**: Junio 2026
+**Estado**: CONGELADA
+
+**Decisión**: Rediseñar interfaz completa con paleta WS, tipografía editorial (Playfair Display + Bodoni Moda), bordes agudos (border-radius 0), sombras elegantes, y variación de layout editorial en CADA página.
+
+**Razón**:
+- UI anterior: genérica, redondeada, suave, corporativa
+- Cliente quiere: premium, editorial, audaz, profesional
+- Paleta WS (blanco/negro + vibrantes) es más impactante que colores pastel
+- Tipografía serif masiva (Playfair/Bodoni) transmite premium
+- Bordes rectos: más agudo, más editorial, menos "SaaS genérico"
+- Variación editorial: no repetitivo, cada página tiene personalidad propia
+
+**Implementación**:
+- `app/globals.css` — Variables WS completas, reset, tipografía base
+- `styles/ui.module.css` — Sistema de componentes border-radius 0
+- `app/layout.tsx` — next/font: Playfair Display + Bodoni Moda + Montserrat
+- `app/home.module.css` — Hero asimétrico negro+naranja, features hover negro
+- `app/dashboard/dashboard.module.css` — Hero negro+cian, cards hover negro, CTA naranja
+- `styles/MatricesList.module.css` — Cards gap:2px editorial, modal premium
+- `styles/FichaDefinicion.module.css` — Border-left cian, Bodoni headers
+- `styles/MTPNew.module.css` — Centro NEGRO premium con textarea blanca
+- `styles/Ikigai.module.css` — Cuadrantes 4 colores, centro negro/borde cian
+
+**Consecuencias**:
+✅ Interfaz completamente rediseñada con premium editorial feel
+✅ Paleta WS aplicada a todas las páginas
+✅ Tipografía editorial (Playfair/Bodoni/Montserrat) en toda la app
+✅ border-radius: 0 en botones, cards, inputs — agudos, NO redondeados
+✅ Sombras elegantes (4px 8px 16px, NO suave blur)
+✅ Variación editorial: dashboard ≠ matrices ≠ cada matrix
+✅ Centro MTP + Ikigai: NEGRO con borde de color (destacado, premium)
+✅ Cuadrantes Ikigai: 4 colores distintos
+✅ Efectos hover: cards se vuelven negras, botones se levantan
+✅ NO genérico LLM
+
+**Documento maestro**: `DESIGN_SYSTEM_MEGA_PROMPT.md`

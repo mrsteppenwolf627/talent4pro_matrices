@@ -14,12 +14,13 @@ interface SheetIkigaiProps {
 export default function SheetIkigai({ matrixId }: SheetIkigaiProps) {
   const {
     metadata,
-    values,
+    data,
     loading,
     saving,
     error,
     lastSaved,
-    updateQuadrant,
+    updateQuestionAnswer,
+    updateIkigai,
     saveData,
   } = useIkigai(matrixId)
 
@@ -31,15 +32,15 @@ export default function SheetIkigai({ matrixId }: SheetIkigaiProps) {
       <header className={styles.header}>
         <div>
           <h1 className={styles.title}>{metadata?.title || 'Matriz Ikigai'}</h1>
-          <p className={styles.subtitle}>Encuentra tu propósito de vida (Modelo 2x2 + Síntesis)</p>
+          <p className={styles.subtitle}>Encuentra tu propósito de vida (Detallado)</p>
         </div>
         <div className={styles.saveStatus}>
           {saving ? (
             <span className={styles.saving}>Guardando cambios...</span>
           ) : lastSaved ? (
-            <span>Último guardado: {lastSaved.toLocaleTimeString()}</span>
+            <span>Guardado a las {lastSaved.toLocaleTimeString()}</span>
           ) : (
-            <span>Los cambios se guardan automáticamente cada 30s</span>
+            <span>Autoguardado activado</span>
           )}
         </div>
       </header>
@@ -49,22 +50,16 @@ export default function SheetIkigai({ matrixId }: SheetIkigaiProps) {
           <IkigaiQuadrant
             key={quadrant.id}
             quadrant={quadrant}
-            value={values[quadrant.id] || ''}
-            onChange={updateQuadrant}
+            answers={data[quadrant.id]}
+            onChange={updateQuestionAnswer}
           />
         ))}
       </div>
 
       <IkigaiCenter
-        value={values.ikigai || ''}
-        onChange={updateQuadrant}
+        value={data.ikigai || ''}
+        onChange={updateIkigai}
         onSave={saveData}
-        quadrantsValues={{
-          passion: values.passion || '',
-          vocation: values.vocation || '',
-          mission: values.mission || '',
-          profession: values.profession || ''
-        }}
       />
     </div>
   )

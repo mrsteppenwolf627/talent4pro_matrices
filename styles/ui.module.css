@@ -1,0 +1,147 @@
+/* ═══════════════════════════════════════════════════════════════════
+   UI SYSTEM — WS PREMIUM EDITORIAL
+   border-radius: 0 everywhere, elegant shadows, bold contrast
+═══════════════════════════════════════════════════════════════════ */
+
+/* ─── Button base ──────────────────────────────────────────────────────────── */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-body);
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  border-radius: 0;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+  white-space: nowrap;
+  text-decoration: none;
+  line-height: 1;
+}
+.button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Sizes */
+.sm { padding: 10px 20px; font-size: 11px; letter-spacing: 1px; }
+.md { padding: 13px 28px; font-size: 13px; }
+.lg { padding: 16px 40px; font-size: 15px; }
+
+/* Variants */
+.primary {
+  background: var(--ws-cyan);
+  color: #fff;
+  border-color: var(--ws-cyan);
+  box-shadow: var(--shadow-btn);
+}
+.primary:hover:not(:disabled) {
+  background: var(--ws-cyan-dk);
+  border-color: var(--ws-cyan-dk);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-btn-hover);
+}
+
+.secondary {
+  background: transparent;
+  color: var(--ws-dark);
+  border-color: var(--ws-dark);
+  box-shadow: none;
+}
+.secondary:hover:not(:disabled) {
+  background: #F0F0F0;
+  box-shadow: var(--shadow-sm);
+}
+
+.danger {
+  background: var(--ws-red);
+  color: #fff;
+  border-color: var(--ws-red);
+  box-shadow: var(--shadow-btn);
+}
+.danger:hover:not(:disabled) {
+  background: var(--ws-red-dk);
+  border-color: var(--ws-red-dk);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-btn-hover);
+}
+
+.ghost {
+  background: transparent;
+  color: var(--ws-white);
+  border-color: rgba(255,255,255,0.5);
+}
+.ghost:hover:not(:disabled) {
+  background: rgba(255,255,255,0.1);
+  border-color: rgba(255,255,255,0.8);
+}
+
+/* ─── Card ─────────────────────────────────────────────────────────────────── */
+.card {
+  background: var(--ws-white);
+  border: 1px solid var(--ws-gray-light);
+  border-radius: 0;
+  padding: 32px;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+.card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-4px);
+}
+
+.cardBorderLeft {
+  border-left: 4px solid var(--ws-cyan);
+}
+
+/* ─── Badge ────────────────────────────────────────────────────────────────── */
+.badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 0;
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+.badgePrimary { background: #E0F4FF; color: var(--ws-cyan); }
+.badgeSuccess { background: #E8F5E9; color: #27AE60; }
+.badgeWarning { background: #FFF3E0; color: #F39C12; }
+.badgeError   { background: #FFF0F0; color: var(--ws-red); }
+.badgeDefault { background: var(--ws-gray-light); color: var(--ws-gray); }
+
+/* ─── Progress Bar ─────────────────────────────────────────────────────────── */
+.progressTrack {
+  width: 100%;
+  height: 4px;
+  background: var(--ws-gray-light);
+  border-radius: 0;
+  overflow: hidden;
+}
+.progressFill {
+  height: 100%;
+  border-radius: 0;
+  transition: width 0.4s ease;
+}
+.progressColorPrimary { background: var(--ws-cyan); }
+.progressColorSuccess { background: #27AE60; }
+.progressColorWarning { background: #F39C12; }
+.progressColorDanger  { background: var(--ws-red); }
+
+/* ─── Section ──────────────────────────────────────────────────────────────── */
+.section { width: 100%; padding: 80px 40px; }
+.sectionBgLight { background: var(--ws-bg); }
+.sectionBgWhite { background: var(--ws-white); }
+.sectionBgDark  { background: var(--ws-dark); color: var(--ws-white); }
+.sectionBgBlack { background: var(--ws-black); color: var(--ws-white); }
+.sectionBgWarm  { background: #F5F1E8; }
+
+.container { max-width: 1200px; margin: 0 auto; }
+
+@media (max-width: 1199px) { .section { padding: 60px 24px; } }
+@media (max-width: 767px)  { .section { padding: 48px 16px; } }

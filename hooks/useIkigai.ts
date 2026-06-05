@@ -2,17 +2,18 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { supabase } from '@/lib/supabase-client'
 import type { MatrixData, MatrixMetadata } from '@/lib/types'
 
-interface IkigaiValues {
-  passion: string
-  vocation: string
-  mission: string
-  profession: string
+// Structure: Record<QuadrantId, Record<QuestionIndex, Answer>>
+export interface IkigaiData {
+  passion: Record<number, string>
+  vocation: Record<number, string>
+  mission: Record<number, string>
+  profession: Record<number, string>
   ikigai: string
 }
 
 interface IkigaiState {
   metadata: MatrixMetadata | null
-  values: IkigaiValues
+  data: IkigaiData
   loading: boolean
   saving: boolean
   error: string | null
@@ -26,11 +27,11 @@ const COL_KEY = 'content'
 export function useIkigai(matrixId: string) {
   const [state, setState] = useState<IkigaiState>({
     metadata: null,
-    values: {
-      passion: '',
-      vocation: '',
-      mission: '',
-      profession: '',
+    data: {
+      passion: {},
+      vocation: {},
+      mission: {},
+      profession: {},
       ikigai: ''
     },
     loading: true,
@@ -40,13 +41,13 @@ export function useIkigai(matrixId: string) {
     lastSaved: null,
   })
 
-  const valuesRef = useRef(state.values)
+  const dataRef = useRef(state.data)
   const isDirtyRef = useRef(state.isDirty)
   
   useEffect(() => {
-    valuesRef.current = state.values
+    dataRef.current = state.data
     isDirtyRef.current = state.isDirty
-  }, [state.values, state.isDirty])
+  }, [state.data, state.isDirty])
 
   const getToken = useCallback(async () => {
     const { data: { session } } = await supabase.auth.getSession()
@@ -69,24 +70,36 @@ export function useIkigai(matrixId: string) {
       const json = await res.json()
       const cells = (json.cells ?? []) as MatrixData[]
       
-      const values: IkigaiValues = {
-        passion: '',
-        vocation: '',
-        mission: '',
-        profession: '',
+      const data: IkigaiData = {
+        passion: {},
+        vocation: {},
+        mission: {},
+        profession: {},
         ikigai: ''
       }
 
       for (const cell of cells) {
-        if (cell.column_key === COL_KEY && values.hasOwnProperty(cell.row_key)) {
-          values[cell.row_key as keyof IkigaiValues] = String(cell.content.value ?? '')
+        if (cell.column_key === COL_KEY) {
+          if (cell.row_key === 'ikigai') {
+            data.ikigai = String(cell.content.value ?? '')
+          } else if (cell.row_key.startsWith('q_')) {
+            // Format: q_quadrantId_index
+            const parts = cell.row_key.split('_')
+            if (parts.length === 3) {
+              const quadrant = parts[1] as keyof IkigaiData
+              const index = parseInt(parts[2], 10)
+              if (data.hasOwnProperty(quadrant) && !isNaN(index)) {
+                data[quadrant][index] = String(cell.content.value ?? '')
+              }
+            }
+          }
         }
       }
 
       setState(prev => ({
         ...prev,
         metadata: json.metadata ?? null,
-        values,
+        data,
         loading: false,
         isDirty: false,
       }))
@@ -99,10 +112,21 @@ export function useIkigai(matrixId: string) {
 
   // ── Actions ─────────────────────────────────────────────────────────────────
 
-  const updateQuadrant = useCallback((id: keyof IkigaiValues, value: string) => {
+  const updateQuestionAnswer = useCallback((quadrant: keyof Omit<IkigaiData, 'ikigai'>, index: number, value: string) => {
     setState(prev => ({
       ...prev,
-      values: { ...prev.values, [id]: value },
+      data: {
+        ...prev.data,
+        [quadrant]: { ...prev.data[quadrant], [index]: value }
+      },
+      isDirty: true
+    }))
+  }, [])
+
+  const updateIkigai = useCallback((value: string) => {
+    setState(prev => ({
+      ...prev,
+      data: { ...prev.data, ikigai: value },
       isDirty: true
     }))
   }, [])
@@ -113,11 +137,27 @@ export function useIkigai(matrixId: string) {
 
     try {
       const token = await getToken()
-      const cells = Object.entries(valuesRef.current).map(([key, value]) => ({
-        row_key: key,
+      const cells: any[] = []
+      
+      // Add quadrant answers
+      Object.entries(dataRef.current).forEach(([quadrant, val]) => {
+        if (quadrant === 'ikigai') return
+        
+        Object.entries(val as Record<number, string>).forEach(([index, answer]) => {
+          cells.push({
+            row_key: `q_${quadrant}_${index}`,
+            column_key: COL_KEY,
+            content: { value: answer, type: 'text' as const },
+          })
+        })
+      })
+
+      // Add ikigai synthesis
+      cells.push({
+        row_key: 'ikigai',
         column_key: COL_KEY,
-        content: { value, type: 'text' as const },
-      }))
+        content: { value: dataRef.current.ikigai, type: 'text' as const },
+      })
 
       const res = await fetch(`/api/matrices/${matrixId}`, {
         method: 'PUT',
@@ -153,13 +193,14 @@ export function useIkigai(matrixId: string) {
 
   return {
     metadata: state.metadata,
-    values: state.values,
+    data: state.data,
     loading: state.loading,
     saving: state.saving,
     error: state.error,
     isDirty: state.isDirty,
     lastSaved: state.lastSaved,
-    updateQuadrant,
+    updateQuestionAnswer,
+    updateIkigai,
     saveData: () => saveData(false),
   }
 }

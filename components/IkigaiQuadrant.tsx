@@ -1,17 +1,18 @@
 'use client'
 
 import type { IkigaiQuadrantDef } from '@/data/ikigaiQuadrantsReal'
-import IkigaiQuestion from './IkigaiQuestion'
+import type { IkigaiData } from '@/hooks/useIkigai'
+import IkigaiQuestionField from './IkigaiQuestionField'
 import styles from '@/styles/Ikigai.module.css'
 
 interface IkigaiQuadrantProps {
   quadrant: IkigaiQuadrantDef
-  value: string
-  onChange: (id: IkigaiQuadrantDef['id'], value: string) => void
+  answers: Record<number, string>
+  onChange: (quadrant: keyof Omit<IkigaiData, 'ikigai'>, index: number, value: string) => void
 }
 
-export default function IkigaiQuadrant({ quadrant, value, onChange }: IkigaiQuadrantProps) {
-  const isCompleted = value.trim().length > 0
+export default function IkigaiQuadrant({ quadrant, answers, onChange }: IkigaiQuadrantProps) {
+  const answeredCount = Object.keys(answers).filter(k => answers[Number(k)].trim() !== '').length
 
   return (
     <div className={styles.quadrant} style={{ borderColor: quadrant.color }}>
@@ -24,25 +25,21 @@ export default function IkigaiQuadrant({ quadrant, value, onChange }: IkigaiQuad
           </div>
         </div>
         <div className={styles.badge}>
-          {isCompleted ? 'COMPLETADO' : 'PENDIENTE'}
+          {answeredCount}/{quadrant.questions.length} campos
         </div>
       </div>
 
-      <div className={styles.questionsBox}>
-        <div className={styles.questionsList}>
-          {quadrant.questions.map((q, idx) => (
-            <IkigaiQuestion key={idx} text={q} />
-          ))}
-        </div>
+      <div className={styles.questionsList}>
+        {quadrant.questions.map((q, idx) => (
+          <IkigaiQuestionField
+            key={idx}
+            index={idx}
+            question={q}
+            answer={answers[idx] || ''}
+            onChange={(val) => onChange(quadrant.id, idx, val)}
+          />
+        ))}
       </div>
-
-      <textarea
-        className={styles.textarea}
-        placeholder={`Describe aquí tu ${quadrant.title.toLowerCase()} basándote en las preguntas guía...`}
-        value={value}
-        onChange={(e) => onChange(quadrant.id, e.target.value)}
-        style={{ borderColor: quadrant.color }}
-      />
     </div>
   )
 }
