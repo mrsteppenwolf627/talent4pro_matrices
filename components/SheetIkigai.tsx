@@ -1,133 +1,70 @@
 'use client'
 
+import { useIkigai } from '@/hooks/useIkigai'
 import IkigaiQuadrant from './IkigaiQuadrant'
 import IkigaiCenter from './IkigaiCenter'
-import { useIkigai } from '@/hooks/useIkigai'
-import { IKIGAI_QUADRANTS, GRID_ORDER, QUADRANT_BY_ID } from '@/data/ikigaiQuadrants'
-import type { QuadrantId } from '@/data/ikigaiQuadrants'
-import type { MatrixType } from '@/lib/types'
+import { IKIGAI_QUADRANTS } from '@/data/ikigaiQuadrantsReal'
 import styles from '@/styles/Ikigai.module.css'
 
 interface SheetIkigaiProps {
   matrixId: string
-  matrixType: MatrixType
-  readOnly?: boolean
+  matrixType: string
 }
 
-export default function SheetIkigai({
-  matrixId,
-  matrixType,
-  readOnly = false,
-}: SheetIkigaiProps) {
+export default function SheetIkigai({ matrixId }: SheetIkigaiProps) {
   const {
     metadata,
-    data,
+    values,
     loading,
     saving,
     error,
-    isDirty,
     lastSaved,
-    filledQuadrants,
-    totalQuadrants,
-    autoSynthesis,
     updateQuadrant,
-    updateCenter,
     saveData,
   } = useIkigai(matrixId)
 
-  const statusText = saving
-    ? 'Guardando…'
-    : isDirty
-    ? 'Cambios sin guardar'
-    : lastSaved
-    ? `Guardado ${lastSaved.toLocaleTimeString()}`
-    : ''
-
-  const statusClass = saving
-    ? styles.saveStatus
-    : isDirty
-    ? styles.saveStatusDirty
-    : styles.saveStatusSaved
-
-  if (loading) {
-    return (
-      <div className={styles.page}>
-        <div className={styles.loading}>
-          <span className={styles.spinner} aria-hidden="true" />
-          Cargando matriz Ikigai…
-        </div>
-      </div>
-    )
-  }
+  if (loading) return <div className={styles.container}>Cargando matriz Ikigai...</div>
+  if (error) return <div className={styles.container}>Error: {error}</div>
 
   return (
-    <div className={styles.page}>
-      {/* ── Toolbar ───────────────────────────────────────────────────────── */}
-      <div className={styles.toolbar}>
+    <div className={styles.container}>
+      <header className={styles.header}>
         <div>
-          <h1 className={styles.toolbarTitle}>
-            {metadata?.title ?? 'Matriz Ikigai'}
-          </h1>
-          <p className={styles.toolbarMeta}>
-            {filledQuadrants}/{totalQuadrants} cuadrantes completados
-          </p>
+          <h1 className={styles.title}>{metadata?.title || 'Matriz Ikigai'}</h1>
+          <p className={styles.subtitle}>Encuentra tu propósito de vida (Modelo 2x2 + Síntesis)</p>
         </div>
-
-        {!readOnly && (
-          <div className={styles.toolbarRight}>
-            {statusText && (
-              <span className={`${styles.saveStatus} ${statusClass}`}>{statusText}</span>
-            )}
-            <button
-              type="button"
-              className={styles.btnSave}
-              onClick={saveData}
-              disabled={saving || !isDirty}
-            >
-              {saving ? 'Guardando…' : 'Guardar'}
-            </button>
-          </div>
-        )}
-      </div>
-
-      {/* ── Fill pips ─────────────────────────────────────────────────────── */}
-      <div className={styles.fillRow} aria-label={`${filledQuadrants} de ${totalQuadrants} cuadrantes`}>
-        {IKIGAI_QUADRANTS.map(q => (
-          <div
-            key={q.id}
-            className={`${styles.fillPip} ${data[q.id]?.trim() ? styles.fillPipDone : ''}`}
-            style={data[q.id]?.trim() ? { background: q.color } : {}}
-            title={q.title}
-          />
-        ))}
-      </div>
-
-      {/* ── Error ─────────────────────────────────────────────────────────── */}
-      {error && <div className={styles.errorBanner} role="alert">{error}</div>}
-
-      {/* ── Grid 2×2 ──────────────────────────────────────────────────────── */}
-      <p className={styles.diagramLabel}>
-        Completa los 4 cuadrantes para descubrir tu propósito de vida
-      </p>
+        <div className={styles.saveStatus}>
+          {saving ? (
+            <span className={styles.saving}>Guardando cambios...</span>
+          ) : lastSaved ? (
+            <span>Último guardado: {lastSaved.toLocaleTimeString()}</span>
+          ) : (
+            <span>Los cambios se guardan automáticamente cada 30s</span>
+          )}
+        </div>
+      </header>
 
       <div className={styles.grid}>
-        {GRID_ORDER.map(id => (
+        {IKIGAI_QUADRANTS.map((quadrant) => (
           <IkigaiQuadrant
-            key={id}
-            def={QUADRANT_BY_ID[id]}
-            value={data[id] ?? ''}
-            onChange={updateQuadrant as (id: QuadrantId, v: string) => void}
-            readOnly={readOnly}
+            key={quadrant.id}
+            quadrant={quadrant}
+            value={values[quadrant.id] || ''}
+            onChange={updateQuadrant}
           />
         ))}
       </div>
 
-      {/* ── Center / Ikigai ───────────────────────────────────────────────── */}
       <IkigaiCenter
-        value={data.ikigai ?? ''}
-        onChange={updateCenter}
-        autoSynthesis={autoSynthesis}
-        readOnly={readOnly}
+        value={values.ikigai || ''}
+        onChange={updateQuadrant}
+        onSave={saveData}
+        quadrantsValues={{
+          passion: values.passion || '',
+          vocation: values.vocation || '',
+          mission: values.mission || '',
+          profession: values.profession || ''
+        }}
       />
     </div>
   )
