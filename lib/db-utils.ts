@@ -4,6 +4,21 @@ import type { MatrixData, MatrixMetadata, UpsertCellPayload } from '@/lib/types'
 
 // ─── Read ──────────────────────────────────────────────────────────────────────
 
+export async function getUserMatrices(
+  userId: string,
+  client: SupabaseClient = supabaseServer
+): Promise<MatrixMetadata[]> {
+  const { data, error } = await client
+    .from('matrices')
+    .select('*')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false })
+
+  if (error) throw error
+
+  return (data ?? []) as MatrixMetadata[]
+}
+
 export async function getMatrixMetadata(
   matrixId: string,
   client: SupabaseClient = supabaseServer
